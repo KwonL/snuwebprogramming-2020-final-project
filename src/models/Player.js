@@ -5,15 +5,15 @@ const schema = new Schema({
   name: String,
   key: String,
 
-  level: Number,
-  exp: Number,
+  level: {type : Number, default : 1},
+  exp: {type : Number, default : 0},
 
   maxHP: { type: Number, default: 10 },
   HP: { type: Number, default: 10 },
   str: { type: Number, default: 5 },
   def: { type: Number, default: 5 },
   x: { type: Number, default: 0 },
-  y: { type: Number, default: 0 }
+  y: { type: Number, default: 0 },
 });
 schema.methods.incrementHP = function (val) {
   const hp = this.HP + val;
