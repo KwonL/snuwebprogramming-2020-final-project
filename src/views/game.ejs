@@ -11,6 +11,9 @@
 
     <div id="status">
         HP: <span id="HP"> 5 / 5</span>
+        <br>
+        Level : <span id = 'level'>1</span>
+        Exp : <span id = 'exp'>0</span>
     </div>
     <div id="game"></div>
     <div id="event_result"></div>
@@ -56,6 +59,8 @@ const sendAction = (action, params = {}) => {
         }
 
         $('#HP').text(`${player.HP} / ${player.maxHP}`)
+        $('#level').text(`${player.level}`)
+        $('#exp').text(`${player.exp}`) 
       });
 
     } 

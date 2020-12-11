@@ -1,0 +1,27 @@
+{
+    "battle0" : {
+        "description" : "늑대와 만났다!"
+    },
+    "battle1" : {
+        "description" : "좀비와 만났다!!"
+    },
+    "battle2" : {
+        "description" : "다크엘프와 만났다!!!"
+    },
+    "battle3" : {
+        "description" : "악마와 만났다!!!!"
+    },
+    "battle4" : {
+        "description" : "검은 용과 만났다!!!!!!!!"
+    },
+    "item" : {
+        "description" : "아이템을 획득하였다!"
+    },
+    "rest": {
+        "description" : "성스러운 힘이 깃든 연못을 만났다. 우물을 마시고 체력을 회복하였다!"
+    },
+    "died" : {
+        "description" : "당신은 사망하셨습니다. 평원의 초입으로 돌아가게 됩니다."
+    }
+
+}

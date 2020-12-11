@@ -32,6 +32,14 @@ class MapManager extends Manager {
     return this.fields[`${x}_${y}`];
   }
 }
+
+class EventManager extends Manager {
+  constructor(datas) {
+    super();
+    this.data = datas;
+  }
+}
+
 const constantManager = new ConstantManager(
   JSON.parse(fs.readFileSync(__dirname + '/constants.json'))
 );
@@ -40,7 +48,12 @@ const mapManager = new MapManager(
   JSON.parse(fs.readFileSync(__dirname + '/map.json'))
 );
 
+const eventManager = new EventManager(
+  JSON.parse(fs.readFileSync(__dirname + '/events.json'))
+);
+
 module.exports = {
   constantManager,
   mapManager,
+  eventManager,
 };
