@@ -1,12 +1,12 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const schema = new Schema({
   name: String,
   key: String,
 
-  level: {type : Number, default : 1},
-  exp: {type : Number, default : 0},
+  level: { type: Number, default: 1 },
+  exp: { type: Number, default: 0 },
 
   maxHP: { type: Number, default: 10 },
   HP: { type: Number, default: 10 },
@@ -20,8 +20,8 @@ schema.methods.incrementHP = function (val) {
   this.HP = Math.min(Math.max(0, hp), this.maxHP);
 };
 
-const Player = mongoose.model("Player", schema);
+const Player = mongoose.model('Player', schema);
 
 module.exports = {
-  Player
+  Player,
 };

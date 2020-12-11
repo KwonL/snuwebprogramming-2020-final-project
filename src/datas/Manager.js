@@ -1,10 +1,8 @@
-const fs = require("fs");
+const fs = require('fs');
 
 class Manager {
   constructor() {}
 }
-
-
 
 class ConstantManager extends Manager {
   constructor(datas) {
@@ -25,7 +23,7 @@ class MapManager extends Manager {
         y: field[1],
         description: field[2],
         canGo: field[3],
-        events: field[4]
+        events: field[4],
       };
     });
   }
@@ -43,19 +41,19 @@ class EventManager extends Manager {
 }
 
 const constantManager = new ConstantManager(
-  JSON.parse(fs.readFileSync(__dirname + "/constants.json"))
+  JSON.parse(fs.readFileSync(__dirname + '/constants.json'))
 );
 
 const mapManager = new MapManager(
-  JSON.parse(fs.readFileSync(__dirname + "/map.json"))
+  JSON.parse(fs.readFileSync(__dirname + '/map.json'))
 );
 
 const eventManager = new EventManager(
-  JSON.parse(fs.readFileSync(__dirname + "/events.json"))
+  JSON.parse(fs.readFileSync(__dirname + '/events.json'))
 );
 
 module.exports = {
   constantManager,
   mapManager,
-  eventManager
+  eventManager,
 };
