@@ -156,9 +156,6 @@ app.post('/action', authentication, async (req, res) => {
     if (field.events.length > 0) {
       const randomIndex = Math.floor(Math.random() * field.events.length);
       const event = field.events[randomIndex];
-      console.log(field);
-      console.log(randomIndex);
-      console.log(event);
       if (event.type === 'battle') {
         const monsterType = event.monster;
         result = {
@@ -198,7 +195,7 @@ app.post('/action', authentication, async (req, res) => {
         player.HP = Math.min(player.maxHP, player.HP + 1);
       }
       if (player.HP === 0) {
-        //사망 이벤트
+        result = { description: '당신은 죽었습니다.' };
       }
     }
 
