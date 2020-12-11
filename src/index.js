@@ -168,6 +168,10 @@ app.post('/action', authentication, async (req, res) => {
             -parseInt((enemyStats.str * 10) / (10 + player.def))
           );
           result.description += enemyStats.name + '에게 데미지를 입었습니다.\n';
+          if (player.HP <= 0) {
+            result = { description: '당신은 죽었습니다' };
+            return res.send({ player, field, event: result, actions });
+          }
           enemyHP -= (player.str * 10) / (10 + enemyStats.def);
           result.description += enemyStats.name + '를 공격하였습니다.\n';
         }
@@ -193,9 +197,6 @@ app.post('/action', authentication, async (req, res) => {
         result = { description: field.descriptions[randomIndex] };
         player.incrementHP(100);
         player.HP = Math.min(player.maxHP, player.HP + 1);
-      }
-      if (player.HP === 0) {
-        result = { description: '당신은 죽었습니다.' };
       }
     }
 
