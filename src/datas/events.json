@@ -14,14 +14,22 @@
     "battle4" : {
         "description" : "검은 용과 만났다!!!!!!!!"
     },
-    "item" : {
+    "item0" : {
+        "description" : "아이템을 획득하였다!"
+    },
+    "item1" : {
+        "description" : "아이템을 획득하였다!"
+    },
+    "item2" : {
+        "description" : "아이템을 획득하였다!"
+    },
+    "item3" : {
+        "description" : "아이템을 획득하였다!"
+    },
+    "item4" : {
         "description" : "아이템을 획득하였다!"
     },
     "rest": {
         "description" : "성스러운 힘이 깃든 연못을 만났다. 우물을 마시고 체력을 회복하였다!"
-    },
-    "died" : {
-        "description" : "당신은 사망하셨습니다. 평원의 초입으로 돌아가게 됩니다."
     }
-
 }

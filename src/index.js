@@ -5,10 +5,11 @@ const crypto = require('crypto');
 
 const {
   constantManager,
-  mapManager,
+  MapManager,
   eventManager,
 } = require('./datas/Manager');
 const { Player } = require('./models/Player');
+const { Map } = require('./models/Map');
 
 const monsterDB = JSON.parse(
   fs.readFileSync(__dirname + '/datas/monsters.json')
@@ -46,6 +47,53 @@ app.get('/game', (req, res) => {
   res.render('game');
 });
 
+async function generateMap(player) {
+  const mapObj = new Map();
+  mapObj.player = player;
+  mapObj.fields = [];
+  for (let i = 0; i < constantManager.mapSize; i++) {
+    for (let j = 0; j < constantManager.mapSize; j++) {
+      let descriptions = [];
+      let events = [];
+      for (let k = 0; k < constantManager.randomEventLength; k++) {
+        let selectedEvent = Object.keys(eventManager.data)[
+          Math.floor(Math.random() * Object.keys(eventManager.data).length)
+        ];
+        descriptions.push(eventManager.data[selectedEvent].description);
+        if (selectedEvent.startsWith('battle')) {
+          events.push({
+            type: 'battle',
+            monster: selectedEvent.slice(-1),
+            percent: Math.floor(Math.random() * 101),
+          });
+        } else if (selectedEvent.startsWith('item')) {
+          events.push({
+            type: 'item',
+            item: selectedEvent.slice(-1),
+          });
+        } else {
+          events.push({
+            type: 'rest',
+          });
+        }
+      }
+      mapObj.fields.push({
+        x: i,
+        y: j,
+        descriptions,
+        canGo: [
+          j - 1 >= 0 ? 1 : 0,
+          i + 1 < constantManager.mapSize ? 1 : 0,
+          j + 1 < constantManager.mapSize ? 1 : 0,
+          i - 1 >= 0 ? 1 : 0,
+        ],
+        events,
+      });
+    }
+  }
+  await mapObj.save();
+}
+
 app.post('/signup', async (req, res) => {
   const { name } = req.body;
 
@@ -64,11 +112,10 @@ app.post('/signup', async (req, res) => {
     exp: 0,
     level: 1,
   });
-
   const key = crypto.randomBytes(24).toString('hex');
   player.key = key;
-
   await player.save();
+  await generateMap(player);
 
   return res.send({ key });
 });
@@ -76,8 +123,12 @@ app.post('/signup', async (req, res) => {
 app.post('/action', authentication, async (req, res) => {
   const { action } = req.body;
   const player = req.player;
-  let event = null;
+  const mapObj = await Map.findOne({ player });
+  if (!mapObj)
+    return res.status(403).send({ error: { map: 'map for player not found' } });
+  const mapManager = new MapManager(mapObj);
   let field;
+  let result;
   let actions = [];
   if (action === 'query') {
     field = mapManager.getField(req.player.x, req.player.y);
@@ -103,54 +154,46 @@ app.post('/action', authentication, async (req, res) => {
 
     actions = [];
     if (field.events.length > 0) {
-      event = field.events[0];
-      // TODO : 확률별로 이벤트 발생하도록 변경
-
+      const randomIndex = Math.floor(Math.random() * field.events.length);
+      const event = field.events[randomIndex];
+      console.log(field);
+      console.log(randomIndex);
+      console.log(event);
       if (event.type === 'battle') {
-        // TODO: 이벤트 별로 events.json 에서 불러와 이벤트 처리
-
         const monsterType = event.monster;
-        //랜덤으로 몬스터 조
+        result = {
+          description: field.descriptions[randomIndex] + '\n',
+        };
+        let enemyStats = monsterDB[monsterType];
+        let enemyHP = enemyStats.HP;
+        while (enemyHP > 0) {
+          player.incrementHP(
+            -parseInt((enemyStats.str * 10) / (10 + player.def))
+          );
+          result.description += enemyStats.name + '에게 데미지를 입었습니다.\n';
+          enemyHP -= (player.str * 10) / (10 + enemyStats.def);
+          result.description += enemyStats.name + '를 공격하였습니다.\n';
+        }
+        result.description += enemyStats.name + '는 쓰러졌습니다.\n';
 
-        if (Math.random() * 100 < event.percent) {
-          //몬스터와 전투
-          event = {
-            description:
-              eventManager.data['battle' + monsterType].description + '\n',
-          };
-          let enemyStats = monsterDB[monsterType];
-          let enemyHP = enemyStats.HP;
-          while (enemyHP > 0) {
-            player.incrementHP(
-              -parseInt((enemyStats.str * 10) / (10 + player.def))
-            );
-            event.description +=
-              enemyStats.name + '에게 데미지를 입었습니다.\n';
-            enemyHP -= (player.str * 10) / (10 + enemyStats.def);
-            event.description += enemyStats.name + '를 공격하였습니다.\n';
-          }
-          event.description += enemyStats.name + '는 쓰러졌습니다.\n';
+        //경험치 획득
+        player.exp += 5 * (monsterType + 1);
 
-          //경험치 획득
-          player.exp += 5 * (monsterType + 1);
-
-          //레벨업과 스탯조정
-          if (player.exp >= player.level * 10) {
-            player.level += 1;
-            player.str = player.level + 5;
-            player.def = player.level + 5;
-            player.maxHP = player.level * 2 + 5;
-            player.HP += 2;
-            player.exp = 0;
-          }
-          console.log(player);
-        } else event = null;
+        //레벨업과 스탯조정
+        if (player.exp >= player.level * 10) {
+          player.level += 1;
+          player.str = player.level + 5;
+          player.def = player.level + 5;
+          player.maxHP = 10 + (player.level - 1) * 2;
+          player.HP += 2;
+          player.exp = 0;
+        }
       } else if (event.type === 'item') {
-        event = { description: eventManager.data['item'].description };
+        result = { description: field.descriptions[randomIndex] };
         player.incrementHP(1);
         player.HP = Math.min(player.maxHP, player.HP + 1);
       } else if (event.type === 'rest') {
-        event = { description: eventManager.data['rest'].description };
+        result = { description: field.descriptions[randomIndex] };
         player.incrementHP(100);
         player.HP = Math.min(player.maxHP, player.HP + 1);
       }
@@ -174,7 +217,7 @@ app.post('/action', authentication, async (req, res) => {
         params: { direction: i, action: 'move' },
       });
   });
-  return res.send({ player, field, event, actions });
+  return res.send({ player, field, event: result, actions });
 });
 
 app.listen(3000);
