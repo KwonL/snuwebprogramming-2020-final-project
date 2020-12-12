@@ -14,6 +14,9 @@ const { Map } = require('./models/Map');
 const monsterDB = JSON.parse(
   fs.readFileSync(__dirname + '/datas/monsters.json')
 );
+const itemDB = JSON.parse(
+  fs.readFileSync(__dirname + '/datas/items.json')
+);
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -24,7 +27,7 @@ app.engine('ejs', require('ejs').__express);
 
 mongoose.connect(
   'mongodb+srv://kwonl:dbPassword@cluster0.n2dh5.mongodb.net/final-game?retryWrites=true&w=majority',
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
 );
 
 const authentication = async (req, res, next) => {
@@ -98,7 +101,8 @@ app.post('/signup', async (req, res) => {
   const { name } = req.body;
 
   if (await Player.exists({ name })) {
-    return res.status(400).send({ error: 'Player already exists' });
+    const player = await Player.findOne({ name: name});
+    return res.send({ key: player.key})
   }
 
   const player = new Player({
@@ -111,6 +115,7 @@ app.post('/signup', async (req, res) => {
     y: 0,
     exp: 0,
     level: 1,
+    item : {},
   });
   const key = crypto.randomBytes(24).toString('hex');
   player.key = key;
@@ -169,7 +174,16 @@ app.post('/action', authentication, async (req, res) => {
           );
           result.description += enemyStats.name + '에게 데미지를 입었습니다.\n';
           if (player.HP <= 0) {
-            result = { description: '당신은 죽었습니다' };
+            result = { description: '당신은 죽었습니다. 시작점으로 이동합니다.' };
+            player.x = 0;
+            player.y = 0;
+            player.save();
+            field.canGo=[0,1,1,0];
+            for(i in player.item){
+              console.log(i)
+              player.item[i] -= Math.floor(player.item[i]*Math.random());
+            }
+            await Player.update({ name: player.name}, {$set :{item : player.item}})
             return res.send({ player, field, event: result, actions });
           }
           enemyHP -= (player.str * 10) / (10 + enemyStats.def);
@@ -190,7 +204,11 @@ app.post('/action', authentication, async (req, res) => {
           player.exp = 0;
         }
       } else if (event.type === 'item') {
-        result = { description: field.descriptions[randomIndex] };
+        const itemType = event.item;
+        let itemStats = itemDB[itemType];
+        result = { description: itemStats.name +'을(를) 획득하였다!' };
+        player.item[itemStats.name] += 1;
+        await Player.update({ name: player.name}, {$set : {item: player.item}})
         player.incrementHP(1);
         player.HP = Math.min(player.maxHP, player.HP + 1);
       } else if (event.type === 'rest') {
@@ -199,12 +217,12 @@ app.post('/action', authentication, async (req, res) => {
         player.HP = Math.min(player.maxHP, player.HP + 1);
       }
     }
-
+    player.str = player.level*5 + player.item.나무목도 + player.item.나무목검*2;
+    player.def = player.level*5 + player.item.천갑옷 + player.item.가죽갑옷*2 + player.item.방패*2;
+    await player.save();
     field.canGo.forEach((direction) => {
       actions.push({ url: '/action', text: 'text', params: { direction } });
     });
-
-    await player.save();
   }
 
   field.canGo.forEach((direction, i) => {
