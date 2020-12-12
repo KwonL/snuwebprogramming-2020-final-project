@@ -15,12 +15,12 @@
         Level : <span id = 'level'>1</span>
         Exp : <span id = 'exp'>0</span>
         str : <span id='str'>5</span>
-        def : <span id='def'>5</span>
-        나무목도 : <span id='나무목도'>5</span>
-        나무목검 : <span id='나무목검'>5</span>
-        천갑옷 : <span id='천갑옷'>5</span>
-        가죽갑옷 : <span id='가죽갑옷'>5</span>
-        방패 : <span id='방패'>5</span>
+        def : <span id='def'>5</span><br>
+        나무목도 : <span id='나무목도'>5</span><br>
+        나무목검 : <span id='나무목검'>5</span><br>
+        천갑옷 : <span id='천갑옷'>5</span><br>
+        가죽갑옷 : <span id='가죽갑옷'>5</span><br>
+        방패 : <span id='방패'>5</span><br>
     </div>
     <div id="game"></div>
     <div id="event_result"></div>
@@ -70,11 +70,11 @@ const sendAction = (action, params = {}) => {
         $('#exp').text(`${player.exp}`)
         $('#str').text(`${player.str}`)
         $('#def').text(`${player.def}`)
-        $('#나무목도').text(`${player.item.나무목도}개`)
-        $('#나무목검').text(`${player.item.나무목검}개`)
-        $('#천갑옷').text(`${player.item.천갑옷}개`)
-        $('#가죽갑옷').text(`${player.item.가죽갑옷}개`)
-        $('#방패').text(`${player.item.방패}개`)
+        $('#나무목도').text(`${player.items[0]}개`)
+        $('#나무목검').text(`${player.items[1]}개`)
+        $('#천갑옷').text(`${player.items[2]}개`)
+        $('#가죽갑옷').text(`${player.items[3]}개`)
+        $('#방패').text(`${player.items[4]}개`)
       });
     }
     const key = localStorage.getItem('_key');
