@@ -13,7 +13,7 @@
 뼈대 코드를 기본으로 하여 다음이 구현되어 있어야 한다.  
 모든 행동들은 서버에서 이루어지나, 클라이언트에서 별도로 확인이 가능하여야 한다.(html 결과창에 결과가 프린트되면된다)
 
-- [ ] 온라인에서 플레이가 가능하다( codesandbox 등을 활용)
+- [X] 온라인에서 플레이가 가능하다(https://gy4id.sse.codesandbox.io/)
 - [X] 로그인, 회원가입
 - [X] 10 * 10 이상의 맵
 - [X] 캐릭터의 이동
@@ -38,7 +38,7 @@
 
 ## 제출
 
-조별로 github public repositiry 주소를 발표전에 github issue에 적어 제출한다.(조 번호, 조원 리스트, codesandbox url 포함)
+조별로 github public repositiry 주소를 발표전에 github issue에 적어 제출한다.(조 번호, 조원 리스트, codesandbox url 포함 - https://codesandbox.io/s/kind-pond-gy4id?file=/package.json)
 
 ## 발표
 
