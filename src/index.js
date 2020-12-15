@@ -217,7 +217,7 @@ app.post('/action', authentication, async (req, res) => {
           player.def = player.level + 5;
           player.maxHP = 10 + (player.level - 1) * 2;
           player.HP += 2;
-          player.exp = 0;
+          player.exp -= player.level*10;
         }
       } else if (event.type === 'item') {
         const itemType = event.item;
