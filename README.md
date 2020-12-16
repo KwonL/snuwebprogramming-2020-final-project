@@ -1,12 +1,3 @@
-# final_project
-
-조별로 온라인에서 텍스트로 즐길 수 있는 머드게임을 제작한다.  
-뼈대코드는 https://codesandbox.io/s/sleepy-blackburn-ixxn0?file=/src/readme.md:606-625 를 참고한다.
-
-## 기본 구성
-
-수업시간에 배운 express, mongoose르 활용하여 개발한다. 상태의 변화는 별도의 데이터베이스에 실시간으로 저장되어야 한다.  
-아이템, 맵 등의 정보는 json형태로 서버에서 따로 보관하고 있어야 한다.
 
 ## 기본스펙
 
@@ -36,10 +27,6 @@
 - [X] 유저의 인벤토리가 클라이언트 상에서 확인이 가능하다.
 - [ ] 전투 중, 10턴 안에 전투가 끝나지 않거나, 체력이 20% 이하로 감소할 경우 도망가는 선택지가 추가로 주어진다.
 
-## 제출
-
-조별로 github public repositiry 주소를 발표전에 github issue에 적어 제출한다.(조 번호, 조원 리스트, codesandbox url 포함 - https://codesandbox.io/s/kind-pond-gy4id?file=/package.json)
-
 ## 발표
 
 git branch를 통한 개별 작업 후 머지 / 버그 수정 : 마스터에서 직접
@@ -56,7 +43,3 @@ player마다 map model 랜덤하게 갖도록 변경, 각 map에서의 이벤트
 레벨업 필요 경험치량 : 레벨에 정비례
 획득 경험치 : 몬스터 타입에 따라 다름
 
-## 평가
-
-발표(40) + 코드평가(60) 으로 이루어진다.  
-코드평가는 github 기여에 따른 개인 평가가 포함된다.
