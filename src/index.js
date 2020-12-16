@@ -176,7 +176,6 @@ app.post('/action', authentication, async (req, res) => {
             player.x = 0;
             player.y = 0;
             player.HP = 10;
-            player.maxHP = 10;
             field.canGo = [0, 1, 1, 0];
             field.x = 0;
             field.y = 0;
