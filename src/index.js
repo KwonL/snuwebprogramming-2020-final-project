@@ -48,7 +48,7 @@ app.get('/game', (req, res) => {
   res.render('game');
 });
 
-async function generateMap(player) {
+const generateMap = async (player) => {
   const mapObj = new Map();
   mapObj.player = player;
   mapObj.fields = [];
@@ -93,7 +93,7 @@ async function generateMap(player) {
     }
   }
   await mapObj.save();
-}
+};
 
 app.post('/signup', async (req, res) => {
   const { name } = req.body;
@@ -159,8 +159,9 @@ app.post('/action', authentication, async (req, res) => {
     if (field.events.length > 0) {
       const randomIndex = Math.floor(Math.random() * field.events.length);
       const event = field.events[randomIndex];
-      if (event.type === 'battle'&&Math.random()*101<event.percent) {
-        if(player.x<5&&player.y<5&&event.monster>=3) event.monster-=2;
+      if (event.type === 'battle' && Math.random() * 101 < event.percent) {
+        if (player.x < 5 && player.y < 5 && event.monster >= 3)
+          event.monster -= 2;
         const monsterType = event.monster;
         let enemyStats = monsterDB[monsterType];
         let enemyHP = enemyStats.HP;
@@ -176,7 +177,7 @@ app.post('/action', authentication, async (req, res) => {
             result.description += '당신은 죽었습니다. 시작점으로 이동합니다.';
             player.x = 0;
             player.y = 0;
-            player.HP = 10;
+            player.HP = player.maxHP;
             field.canGo = [0, 1, 1, 0];
             field.x = 0;
             field.y = 0;
@@ -217,9 +218,9 @@ app.post('/action', authentication, async (req, res) => {
           player.def = player.level + 5;
           player.maxHP = 10 + (player.level - 1) * 2;
           player.HP += 2;
-          player.exp -= player.level*10;
+          player.exp -= player.level * 10;
         }
-      } else if (event.type === 'item'&&Math.random()<0.5) {
+      } else if (event.type === 'item' && Math.random() < 0.5) {
         const itemType = event.item;
         let itemStats = itemDB[itemType];
         result = { description: itemStats.name + '을(를) 획득하였다!' };
