@@ -159,7 +159,7 @@ app.post('/action', authentication, async (req, res) => {
     if (field.events.length > 0) {
       const randomIndex = Math.floor(Math.random() * field.events.length);
       const event = field.events[randomIndex];
-      if (event.type === 'battle') {
+      if (event.type === 'battle'&&Math.random()*101<event.percent) {
         const monsterType = event.monster;
         result = {
           description: field.descriptions[randomIndex] + '\n',
