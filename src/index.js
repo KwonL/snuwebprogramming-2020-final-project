@@ -160,12 +160,13 @@ app.post('/action', authentication, async (req, res) => {
       const randomIndex = Math.floor(Math.random() * field.events.length);
       const event = field.events[randomIndex];
       if (event.type === 'battle'&&Math.random()*101<event.percent) {
+        if(player.x<5&&player.y<5&&event.monster>=3) event.monster-=2;
         const monsterType = event.monster;
-        result = {
-          description: field.descriptions[randomIndex] + '\n',
-        };
         let enemyStats = monsterDB[monsterType];
         let enemyHP = enemyStats.HP;
+        result = {
+          description: enemyStats.name + '을(를) 만났다!!!\n',
+        };
         while (enemyHP > 0) {
           player.incrementHP(
             -parseInt((enemyStats.str * 10) / (10 + player.def))
