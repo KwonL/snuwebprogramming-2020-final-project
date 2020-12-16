@@ -218,7 +218,7 @@ app.post('/action', authentication, async (req, res) => {
           player.HP += 2;
           player.exp -= player.level*10;
         }
-      } else if (event.type === 'item') {
+      } else if (event.type === 'item'&&Math.random()<0.5) {
         const itemType = event.item;
         let itemStats = itemDB[itemType];
         result = { description: itemStats.name + '을(를) 획득하였다!' };
